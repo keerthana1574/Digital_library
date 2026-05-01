@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Library</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+    
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+
+        }
+        .genre-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+           
+            
+        }
+        .genre-btn {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .genre-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .genre-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .book-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+        }
+        .download-btn {
+            display: inline-block;
+            background-color: rgb(192, 151, 97);
+            color: rgb(22, 8, 8);
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+    
+</head>
+<body>
+    
+    <h1 style="text-align: center;">Digital Library</h1>
+    
+    
+    <div id="branchContainer" class="branch-container">
+
+        <!-- Genre buttons will be dynamically added here -->
+    </div>
+
+    <div id="bookGrid" class="book-grid">
+        <!-- Books will be displayed here -->
+    </div>
+
+    <script>
+        // Predefined branch (first one is 'All Books')
+        const branches = ['All Books', 'CS and IS Engineering', 'Electronics and communication Engineering', 'Civil Engineering', 'Mathematics', 'Mechanical Engineering'];
+
+        // Create branch buttons
+        function createbranchButtons() {
+            const container = document.getElementById('branchContainer');
+            
+            branches.forEach(branch => {
+                const button = document.createElement('button');
+                button.textContent = branch;
+                button.className = 'branch-btn';
+                button.addEventListener('click', () => fetchBooks(branch));
+                
+                // Set 'All Books' as default active
+                if (branch === 'All Books') {
+                    button.classList.add('active');
+                }
+                
+                container.appendChild(button);
+            });
+        }
+
+        // Fetch books based on branch
+        async function fetchBooks(selectedbranch) {
+            // Update active button
+            const buttons = document.querySelectorAll('.branch-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const bookGrid = document.getElementById('bookGrid');
+            bookGrid.innerHTML = ''; // Clear previous books
+
+            try {
+                // Construct URL with brach query parameter
+                const url = selectedbranch === 'All Books' 
+                    ? 'http://localhost:3000/api/books'
+                    : `http://localhost:3000/api/books?branch=${selectedbranch}`;
+                
+                const response = await fetch(url);
+                const books = await response.json();
+
+                // Display books
+                books.forEach(book => {
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card';
+                    bookCard.innerHTML = `
+                        <h3>${book.title}</h3>
+                        <p>Author: ${book.author}</p>
+                        <p>branch: ${book.branch}</p>
+                        <a href="${book.fileUrl}" class="download-btn" target="_blank">
+                            Download Book
+                        </a>
+                    `;
+                    bookGrid.appendChild(bookCard);
+                });
+
+                // Show message if no books found
+                if (books.length === 0) {
+                    bookGrid.innerHTML = `<p>No books found in ${selectedbranch} branch.</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                bookGrid.innerHTML = '<p>Error loading books. Please try again.</p>';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            createbranchButtons();
+            fetchBooks('All Books'); // Load all books by default
+        });
+    </script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            signOut 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfz3XGumJd3CO9VOgnVPtAaj5dV1sghjI",
+            authDomain: "digital-library-cab20.firebaseapp.com",
+            projectId: "digital-library-cab20",
+            storageBucket: "digital-library-cab20.appspot.com",
+            messagingSenderId: "241363341340",
+            appId: "1:241363341340:web:4ab3ada2fcc90d0b1e0fd9",
+            measurementId: "G-H71L2WQGZ8"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    
+        // Create logout button and user info container
+        function createUserNavigation() {
+            const navContainer = document.createElement('div');
+            navContainer.id = 'user-nav';
+            navContainer.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+    
+            const userInfoSpan = document.createElement('span');
+            userInfoSpan.id = 'user-info';
+            userInfoSpan.style.color = 'white';
+    
+            const logoutBtn = document.createElement('button');
+            logoutBtn.textContent = 'Logout';
+            logoutBtn.id = 'logout-btn';
+            logoutBtn.style.cssText = `
+                padding: 8px 15px;
+                background-color: #050e42;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            `;
+    
+            logoutBtn.addEventListener('mouseover', () => {
+                logoutBtn.style.backgroundColor = '#979dbe';
+            });
+    
+            logoutBtn.addEventListener('mouseout', () => {
+                logoutBtn.style.backgroundColor = '#050e42';
+            });
+    
+            navContainer.appendChild(userInfoSpan);
+            navContainer.appendChild(logoutBtn);
+            document.body.appendChild(navContainer);
+    
+            // Logout functionality
+            logoutBtn.addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'auth.html'; // Redirect to login page
+                } catch (error) {
+                    console.error('Logout Error:', error);
+                    alert('Failed to logout. Please try again.');
+                }
+            });
+        }
+    
+        // Authentication state observer
+        onAuthStateChanged(auth, (user) => {
+            // Create user navigation if user is logged in
+            if (user) {
+                createUserNavigation();
+                
+                // Update user info
+                const userInfoSpan = document.getElementById('user-info');
+                if (userInfoSpan) {
+                    userInfoSpan.textContent = user.email || 'User';
+                }
+            } else {
+                // Redirect to login page if not authenticated
+                if (window.location.pathname !== '/auth.html') {
+                    window.location.href = 'auth.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

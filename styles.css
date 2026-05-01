@@ -1,0 +1,145 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #db9494;
+    line-height: 1.6;
+    background:url(mini.jpg);
+    background-size:cover;
+    background-repeat: no-repeat;
+    
+}
+
+/* Header Styling */
+h1 {
+    text-align: center;
+    font-size:800%;
+    font-style: oblique;
+    font-kerning: normal;
+    background-color: #b49d5f;
+    color:rgb(239, 239, 241);
+    padding: 20px 0;
+    background:transparent;
+    margin: 0;
+}
+
+/* Branch Button Container */
+.branch-container {
+    display:grid;
+    justify-content: center;
+    flex-wrap:inherit;
+    gap: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(180, 29, 29, 0.1);
+    margin-bottom: 20px;
+    background:transparent;
+}
+
+/* Branch Buttons */
+.branch-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid  white;
+    background-color:rgb(139, 208, 220);
+    color:black;
+    border-radius: 4px;
+    cursor: pointer;
+    font-style: unset;
+    transition: all 0.3s ease-in-out;
+
+
+}
+
+.branch-btn:hover {
+    background-color: #979dbe;
+}
+
+.branch-btn.active {
+    background-color: #979dbe;
+    color: rgb(255, 255, 255);
+    border: 3px solid #f1f1f1;
+    
+}
+
+/* Book Grid Styling */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+/* Book Card Styling */
+.book-card {
+    background-color: #92cfa1;
+    border: 1px solid #2b4a63;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Book Title */
+.book-card h3 {
+    font-size: 1.2rem;
+    color: black;
+    margin: 0 0 10px;
+}
+
+/* Book Author and Branch */
+.book-card p {
+    margin: 5px 0;
+    color: rgb(80, 52, 52);
+    font-size: 0.9rem;
+}
+
+/* Download Button */
+.download-btn {
+    display: inline-block;
+    background-color: #050e42;
+    color: white;
+    text-decoration:solid;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+    background-color: #979dbe;
+}
+
+/* Message for No Books Found */
+.book-grid p {
+    font-size: 1rem;
+    color:whitesmoke;
+    text-align: center;
+    grid-column: span 3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .branch-container {
+        gap: 5px;
+        padding: 10px;
+        
+    }
+    .branch-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    .book-card {
+        padding: 15px;
+    
+    }
+    .download-btn {
+        padding: 8px 10px;
+    }
+}
